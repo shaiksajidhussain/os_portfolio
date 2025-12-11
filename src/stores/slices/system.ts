@@ -9,6 +9,7 @@ export interface SystemSlice {
   bluetooth: boolean;
   airdrop: boolean;
   fullscreen: boolean;
+  wallpaper: string;
   toggleDark: () => void;
   toggleWIFI: () => void;
   toggleBluetooth: () => void;
@@ -16,6 +17,7 @@ export interface SystemSlice {
   toggleFullScreen: (v: boolean) => void;
   setVolume: (v: number) => void;
   setBrightness: (v: number) => void;
+  setWallpaper: (url: string) => void;
 }
 
 export const createSystemSlice: StateCreator<SystemSlice> = (set) => ({
@@ -26,6 +28,7 @@ export const createSystemSlice: StateCreator<SystemSlice> = (set) => ({
   bluetooth: true,
   airdrop: true,
   fullscreen: false,
+  wallpaper: "",
   toggleDark: () =>
     set((state) => {
       if (!state.dark) document.documentElement.classList.add("dark");
@@ -41,5 +44,6 @@ export const createSystemSlice: StateCreator<SystemSlice> = (set) => ({
       return { fullscreen: v };
     }),
   setVolume: (v) => set(() => ({ volume: v })),
-  setBrightness: (v) => set(() => ({ brightness: v }))
+  setBrightness: (v) => set(() => ({ brightness: v })),
+  setWallpaper: (url) => set(() => ({ wallpaper: url }))
 });

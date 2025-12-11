@@ -21,6 +21,13 @@ interface DesktopState {
   currentTitle: string;
   hideDockAndTopbar: boolean;
   spotlight: boolean;
+  selectedIcons: {
+    [key: string]: boolean;
+  };
+  iconPositions: {
+    [key: string]: { x: number; y: number };
+  };
+  draggingIcon: string | null;
 }
 
 export default function Desktop(props: MacActions) {
@@ -33,11 +40,15 @@ export default function Desktop(props: MacActions) {
     showLaunchpad: false,
     currentTitle: "Finder",
     hideDockAndTopbar: false,
-    spotlight: false
+    spotlight: false,
+    selectedIcons: {},
+    iconPositions: {},
+    draggingIcon: null
   } as DesktopState);
 
   const [spotlightBtnRef, setSpotlightBtnRef] =
     useState<React.RefObject<HTMLDivElement> | null>(null);
+  const initializedRef = useRef(false);
 
   const { dark, brightness } = useStore((state) => ({
     dark: state.dark,
@@ -69,11 +80,14 @@ export default function Desktop(props: MacActions) {
       };
     });
 
-    setState({ ...state, showApps, appsZ, maxApps, minApps });
+    setState((prevState) => ({ ...prevState, showApps, appsZ, maxApps, minApps }));
   };
 
   useEffect(() => {
-    getAppsData();
+    if (!initializedRef.current) {
+      initializedRef.current = true;
+      getAppsData();
+    }
   }, []);
 
   const toggleLaunchpad = (target: boolean): void => {
@@ -235,11 +249,208 @@ export default function Desktop(props: MacActions) {
     });
   };
 
+  const handleIconClick = (e: React.MouseEvent, appId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Don't handle click if we just finished dragging
+    const iconElement = e.currentTarget as HTMLElement;
+    if (iconElement.getAttribute("data-was-dragging") === "true") {
+      return;
+    }
+
+    const selectedIcons = { ...state.selectedIcons };
+    if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
+      // Clear all selections if not holding modifier keys
+      Object.keys(selectedIcons).forEach((key) => {
+        selectedIcons[key] = false;
+      });
+    }
+    selectedIcons[appId] = !selectedIcons[appId];
+    setState({ ...state, selectedIcons });
+  };
+
+  const handleIconDoubleClick = (e: React.MouseEvent, appId: string) => {
+    e.stopPropagation();
+    openApp(appId);
+  };
+
+  const handleIconMouseDown = (e: React.MouseEvent, appId: string) => {
+    e.stopPropagation();
+    if (e.button !== 0) return; // Only handle left mouse button
+
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const iconPositions = { ...state.iconPositions };
+    const currentPos = iconPositions[appId] || { x: 0, y: 0 };
+    const startIconX = currentPos.x;
+    const startIconY = currentPos.y;
+    let hasMoved = false;
+    const dragThreshold = 5; // pixels to move before starting drag
+    let wasDragging = false;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const deltaX = Math.abs(moveEvent.clientX - startX);
+      const deltaY = Math.abs(moveEvent.clientY - startY);
+
+      if (deltaX > dragThreshold || deltaY > dragThreshold) {
+        if (!hasMoved) {
+          hasMoved = true;
+          wasDragging = true;
+          setState((prevState) => ({
+            ...prevState,
+            draggingIcon: appId
+          }));
+        }
+
+        const totalDeltaX = moveEvent.clientX - startX;
+        const totalDeltaY = moveEvent.clientY - startY;
+
+        iconPositions[appId] = {
+          x: startIconX + totalDeltaX,
+          y: startIconY + totalDeltaY
+        };
+
+        setState((prevState) => ({
+          ...prevState,
+          iconPositions
+        }));
+      }
+    };
+
+    const handleMouseUp = () => {
+      setState((prevState) => ({
+        ...prevState,
+        draggingIcon: null
+      }));
+
+      // Store drag state in a way that click handler can check
+      if (wasDragging) {
+        // Prevent click event if we dragged
+        const iconElement = document.querySelector(
+          `[data-icon-id="${appId}"]`
+        ) as HTMLElement;
+        if (iconElement) {
+          iconElement.setAttribute("data-was-dragging", "true");
+          setTimeout(() => {
+            iconElement.removeAttribute("data-was-dragging");
+          }, 100);
+        }
+      }
+
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  const handleDesktopClick = (e: React.MouseEvent) => {
+    // Clear selection when clicking on desktop
+    if (e.target === e.currentTarget) {
+      const selectedIcons = { ...state.selectedIcons };
+      Object.keys(selectedIcons).forEach((key) => {
+        selectedIcons[key] = false;
+      });
+      setState({ ...state, selectedIcons });
+    }
+  };
+
+  const renderDesktopIcons = () => {
+    const desktopApps = apps.filter((app) => app.showOnDesktop === true);
+
+    return (
+      <div
+        className="absolute inset-0"
+        style={{ top: minMarginY, padding: "20px", zIndex: 1 }}
+        onClick={handleDesktopClick}
+      >
+        {desktopApps.map((app, index) => {
+          const position = state.iconPositions[app.id] || {
+            x: (index % 5) * 120 + 20,
+            y: Math.floor(index / 5) * 100 + 20
+          };
+          const isSelected = state.selectedIcons[app.id] || false;
+          const isDragging = state.draggingIcon === app.id;
+
+          return (
+            <div
+              key={`desktop-icon-${app.id}`}
+              data-icon-id={app.id}
+              className="flex flex-col items-center cursor-pointer group absolute select-none"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleIconClick(e, app.id);
+              }}
+              onDoubleClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const iconElement = e.currentTarget as HTMLElement;
+                if (iconElement.getAttribute("data-was-dragging") !== "true") {
+                  handleIconDoubleClick(e, app.id);
+                }
+              }}
+              onMouseDown={(e) => handleIconMouseDown(e, app.id)}
+              style={{
+                left: `${position.x}px`,
+                top: `${position.y}px`,
+                width: "100px",
+                userSelect: "none",
+                pointerEvents: "auto",
+                zIndex: isDragging ? 1000 : isSelected ? 100 : 10
+              }}
+            >
+              <div className="relative mb-1">
+                <div
+                  className={`absolute inset-0 rounded transition-all ${
+                    isSelected
+                      ? "bg-blue-500/40 border-2 border-blue-400"
+                      : "group-hover:bg-white/10"
+                  }`}
+                  style={{
+                    padding: "2px",
+                    margin: "-2px"
+                  }}
+                />
+                <img
+                  src={app.img}
+                  alt={app.title}
+                  className={`w-16 h-16 object-contain transition-transform duration-150 ${
+                    isDragging ? "scale-110 opacity-80" : "group-hover:scale-110"
+                  }`}
+                  draggable={false}
+                />
+              </div>
+              <div
+                className={`text-xs text-center px-1.5 py-0.5 rounded max-w-full break-words transition-colors ${
+                  isSelected ? "bg-blue-500/50" : "group-hover:bg-blue-500/30"
+                }`}
+                style={{
+                  color: "white",
+                  textShadow: "1px 1px 2px rgba(0, 0, 0, 0.8)",
+                  wordBreak: "break-word",
+                  lineHeight: "1.2"
+                }}
+              >
+                {app.title}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const wallpaper = useStore((state) => state.wallpaper);
+  const wallpaperUrl = wallpaper || (dark ? wallpapers.night : wallpapers.day);
+
   return (
     <div
       className="size-full overflow-hidden bg-center bg-cover"
       style={{
-        backgroundImage: `url(${dark ? wallpapers.night : wallpapers.day})`,
+        backgroundImage: `url(${wallpaperUrl})`,
         filter: `brightness( ${(brightness as number) * 0.7 + 50}% )`
       }}
     >
@@ -255,9 +466,15 @@ export default function Desktop(props: MacActions) {
         setSpotlightBtnRef={setSpotlightBtnRef}
       />
 
+      {/* Desktop Icons */}
+      {renderDesktopIcons()}
+
       {/* Desktop Apps */}
-      <div className="window-bound z-10 absolute" style={{ top: minMarginY }}>
-        {renderAppWindows()}
+      <div
+        className="window-bound z-10 absolute"
+        style={{ top: minMarginY, pointerEvents: "none" }}
+      >
+        <div style={{ pointerEvents: "auto" }}>{renderAppWindows()}</div>
       </div>
 
       {/* Spotlight */}

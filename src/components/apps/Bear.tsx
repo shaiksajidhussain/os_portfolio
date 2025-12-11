@@ -59,7 +59,7 @@ const Highlighter = (dark: boolean): any => {
 
 const Sidebar = ({ cur, setMidBar }: SidebarProps) => {
   return (
-    <div text-white>
+    <div className="text-white">
       <div className="h-12 pr-3 hstack space-x-3 justify-end">
         <span className="i-ic:baseline-cloud-off text-xl" />
         <span className="i-akar-icons:settings-vertical text-xl" />
@@ -68,9 +68,9 @@ const Sidebar = ({ cur, setMidBar }: SidebarProps) => {
         {bear.map((item, index) => (
           <li
             key={`bear-sidebar-${item.id}`}
-            className={`pl-6 h-8 hstack cursor-default ${
-              cur === index ? "bg-red-500" : "bg-transparent"
-            } ${cur === index ? "" : "hover:bg-gray-600"}`}
+            className={`pl-6 h-8 hstack cursor-default text-white ${
+              cur === index ? "bg-blue-600/30" : "bg-transparent"
+            } ${cur === index ? "" : "hover:bg-white/5"}`}
             onClick={() => setMidBar(item.md, index)}
           >
             <span className={item.icon} />
@@ -88,32 +88,32 @@ const Middlebar = ({ items, cur, setContent }: MiddlebarProps) => {
       {items.map((item: BearMdData, index: number) => (
         <li
           key={`bear-midbar-${item.id}`}
-          className={`h-24 flex flex-col cursor-default border-l-2 ${
+          className={`h-24 flex flex-col cursor-default border-l-2 text-white ${
             cur === index
-              ? "border-red-500 bg-white dark:bg-gray-900"
+              ? "border-blue-500 bg-blue-600/20"
               : "border-transparent bg-transparent"
-          } hover:(bg-white dark:bg-gray-900)`}
+          } hover:bg-white/5`}
           onClick={() => setContent(item.id, item.file, index)}
         >
           <div className="h-8 mt-3 hstack">
-            <div className="-mt-1 w-10 vstack text-c-500">
+            <div className="-mt-1 w-10 vstack text-gray-300">
               <span className={item.icon} />
             </div>
-            <span className="relative flex-1 font-bold" text="gray-900 dark:gray-100">
+            <span className="relative flex-1 font-bold text-white">
               {item.title}
               {item.link && (
                 <a
-                  pos="absolute top-1 right-4"
+                  className="absolute top-1 right-4"
                   href={item.link}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <span className="i-ant-design:link-outlined text-c-500" />
+                  <span className="i-ant-design:link-outlined text-gray-400" />
                 </a>
               )}
             </span>
           </div>
-          <div className="flex-1 ml-10" p="b-2 r-1" text="sm c-500" border="b c-300">
+          <div className="flex-1 ml-10 pb-2 pr-1 text-sm text-gray-400 border-b border-gray-700">
             {item.excerpt}
           </div>
         </li>
@@ -172,7 +172,7 @@ const Content = ({ contentID, contentURL }: ContentProps) => {
   }, [contentID, contentURL, fetchMarkdown]);
 
   return (
-    <div className="markdown w-2/3 mx-auto px-2 py-6 text-c-700">
+    <div className="markdown w-2/3 mx-auto px-2 py-6 text-white">
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkMath]}
         rehypePlugins={[
@@ -217,17 +217,17 @@ const Bear = () => {
 
   return (
     <div className="bear font-avenir flex h-full">
-      <div className="w-44 overflow-auto bg-gray-700">
+      <div className="w-44 overflow-auto bg-black/60 backdrop-blur-2xl">
         <Sidebar cur={state.curSidebar} setMidBar={setMidBar} />
       </div>
-      <div className="w-60 overflow-auto" bg="gray-50 dark:gray-800" border="r c-300">
+      <div className="w-60 overflow-auto bg-black/60 backdrop-blur-2xl" border="r c-300">
         <Middlebar
           items={state.midbarList}
           cur={state.curMidbar}
           setContent={setContent}
         />
       </div>
-      <div className="flex-1 overflow-auto" bg="gray-50 dark:gray-800">
+      <div className="flex-1 overflow-auto bg-black/60 backdrop-blur-2xl">
         <Content contentID={state.contentID} contentURL={state.contentURL} />
       </div>
     </div>

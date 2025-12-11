@@ -6,7 +6,7 @@
 .bear .markdown h2,
 .bear .markdown h3,
 .bear .markdown h4 {
-  @apply font-bold relative text-c-800;
+  @apply font-bold relative text-white;
 }
 
 .bear .markdown h1,
@@ -20,7 +20,7 @@
 .bear .markdown h2::before,
 .bear .markdown h3::before,
 .bear .markdown h4::before {
-  @apply absolute text-sm text-c-400 -left-7 bottom-1;
+  @apply absolute text-sm text-gray-400 -left-7 bottom-1;
 }
 
 .bear .markdown h1 {
@@ -60,7 +60,7 @@
 }
 
 .bear .markdown p {
-  @apply mt-6;
+  @apply mt-6 text-white;
 }
 
 .bear .markdown h2 + p,
@@ -71,7 +71,7 @@
 
 .bear .markdown ul,
 .bear .markdown ol {
-  @apply mt-2 pl-5;
+  @apply mt-2 pl-5 text-white;
 }
 
 .bear .markdown ul {
@@ -87,11 +87,11 @@
 }
 
 .bear .markdown li p {
-  @apply m-0 mb-2;
+  @apply m-0 mb-2 text-white;
 }
 
 .bear .markdown code {
-  @apply text-sm border border-c-300 rounded py-0.5 px-1 bg-c-50;
+  @apply text-sm border border-gray-600 rounded py-0.5 px-1 bg-black/40 text-white;
 }
 
 .bear .markdown pre {
@@ -103,7 +103,7 @@
 }
 
 .bear .markdown pre div {
-  @apply border border-c-300 rounded;
+  @apply border border-gray-600 rounded;
 }
 
 .bear .markdown .token {
@@ -120,9 +120,9 @@
 
 .bear .markdown table td,
 .bear .markdown table th {
-  @apply px-3 py-2 border border-c-300;
+  @apply px-3 py-2 border border-gray-600 text-white;
 }
 
 .bear .markdown table tr {
-  @apply border-t border-gray-300 bg-transparent;
+  @apply border-t border-gray-600 bg-transparent;
 }

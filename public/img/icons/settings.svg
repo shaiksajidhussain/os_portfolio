@@ -1,0 +1,13 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gearGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#357ABD;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="256" cy="256" r="200" fill="url(#gearGradient)"/>
+  <path d="M256 80 L280 120 L320 100 L340 140 L380 160 L360 200 L400 240 L360 280 L380 320 L340 340 L320 380 L280 360 L256 400 L232 360 L192 380 L172 340 L132 320 L152 280 L112 240 L152 200 L132 160 L172 140 L192 100 L232 120 Z" fill="white" opacity="0.9"/>
+  <circle cx="256" cy="256" r="80" fill="url(#gearGradient)"/>
+  <circle cx="256" cy="256" r="60" fill="white" opacity="0.3"/>
+</svg>
+

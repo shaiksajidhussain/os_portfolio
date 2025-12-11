@@ -16,7 +16,9 @@ declare global {
   const Launchpad: typeof import('./components/Launchpad')['default']
   const MenuItem: typeof import('./components/menus/base')['MenuItem']
   const MenuItemGroup: typeof import('./components/menus/base')['MenuItemGroup']
+  const Preview: typeof import('./components/apps/Preview')['default']
   const Safari: typeof import('./components/apps/Safari')['default']
+  const Settings: typeof import('./components/apps/Settings')['default']
   const Spotlight: typeof import('./components/Spotlight')['default']
   const Terminal: typeof import('./components/apps/Terminal')['default']
   const TopBar: typeof import('./components/menus/TopBar')['default']
@@ -50,4 +52,10 @@ declare global {
   const useSyncExternalStore: typeof import('react')['useSyncExternalStore']
   const useTransition: typeof import('react')['useTransition']
   const useWindowSize: typeof import('./hooks/useWindowSize')['useWindowSize']
+}
+// for type re-export
+declare global {
+  // @ts-ignore
+  export type { Terminal } from './components/apps/Terminal'
+  import('./components/apps/Terminal')
 }

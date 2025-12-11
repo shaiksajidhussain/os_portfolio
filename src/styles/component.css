@@ -66,21 +66,50 @@
 
 /* --------- slider --------- */
 
-.slider .rangeslider {
-  @apply bg-c-300 w-full h-7 shadow-none m-0 rounded-r-full border-t border-r border-b border-transparent;
+.slider {
+  @apply flex;
 }
 
-.slider .rangeslider .rangeslider__fill {
-  @apply bg-c-100 shadow-none rounded-none;
+.slider .slider-wrapper {
+  @apply relative flex-1 h-7 rounded-r-full border-t border-r border-b border-gray-600 bg-white/20 backdrop-blur-sm;
 }
 
-.slider .rangeslider .rangeslider__handle {
-  @apply border border-c-300 outline-none size-7 text-white bg-white;
-  box-shadow: -3px 0px 8px 0px rgba(17, 17, 17, 0.15);
+.slider .slider-fill {
+  @apply absolute top-0 left-0 h-7 rounded-r-full pointer-events-none;
+  width: calc(var(--value, 50) * 1%);
+  background: white;
+  z-index: 1;
 }
 
-.slider .rangeslider .rangeslider__handle::after {
-  @apply hidden;
+.slider .slider-input {
+  @apply w-full h-7 m-0 rounded-r-full border-t border-r border-b border-transparent appearance-none cursor-pointer relative z-10;
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+.slider .slider-input::-webkit-slider-runnable-track {
+  @apply h-7 rounded-r-full;
+  background: transparent;
+}
+
+.slider .slider-input::-moz-range-track {
+  @apply h-7 rounded-r-full;
+  background: transparent;
+}
+
+.slider .slider-input::-webkit-slider-thumb {
+  @apply appearance-none size-7 border border-gray-500 outline-none bg-white cursor-pointer;
+  -webkit-appearance: none;
+  box-shadow: -3px 0px 8px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  margin-top: 0;
+}
+
+.slider .slider-input::-moz-range-thumb {
+  @apply size-7 border border-gray-500 outline-none bg-white cursor-pointer;
+  box-shadow: -3px 0px 8px 0px rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  border: 1px solid;
 }
 
 

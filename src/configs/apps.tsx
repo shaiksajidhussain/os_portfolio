@@ -1,12 +1,14 @@
 import { appBarHeight } from "~/utils";
 import type { AppsData } from "~/types";
+import Settings from "~/components/apps/Settings";
+import Preview from "~/components/apps/Preview";
 
 const apps: AppsData[] = [
   {
     id: "launchpad",
     title: "Launchpad",
     desktop: false,
-    img: "img/icons/launchpad.png"
+    img: "https://res.cloudinary.com/dgus6y6lm/image/upload/v1765283102/Launchpad_Icon_fzbddg.png"
   },
   {
     id: "bear",
@@ -40,31 +42,32 @@ const apps: AppsData[] = [
     img: "img/icons/safari.png",
     content: <Safari />
   },
-  {
-    id: "vscode",
-    title: "VSCode",
-    desktop: true,
-    width: 900,
-    height: 600,
-    x: 80,
-    y: -30,
-    img: "img/icons/vscode.png",
-    content: <VSCode />
-  },
-  {
-    id: "facetime",
-    title: "FaceTime",
-    desktop: true,
-    img: "img/icons/facetime.png",
-    width: 500 * 1.7,
-    height: 500 + appBarHeight,
-    minWidth: 350 * 1.7,
-    minHeight: 350 + appBarHeight,
-    aspectRatio: 1.7,
-    x: -80,
-    y: 20,
-    content: <FaceTime />
-  },
+  // {
+  //   id: "vscode",
+  //   title: "VSCode",
+  //   desktop: true,
+  //   width: 900,
+  //   height: 600,
+  //   x: 80,
+  //   y: -30,
+  //   img: "img/icons/vscode.png",
+  //   content: <VSCode />
+  // },
+  // {
+  //   id: "facetime",
+  //   title: "FaceTime",
+  //   desktop: true,
+  //   img: "img/icons/facetime.png",
+  //   width: 500 * 1.7,
+  //   height: 500 + appBarHeight,
+  //   minWidth: 350 * 1.7,
+  //   minHeight: 350 + appBarHeight,
+  //   aspectRatio: 1.7,
+  //   x: -80,
+  //   y: 20,
+  //   content: <FaceTime />
+  // },
+
   {
     id: "terminal",
     title: "Terminal",
@@ -73,11 +76,43 @@ const apps: AppsData[] = [
     content: <Terminal />
   },
   {
+    id: "settings",
+    title: "Settings",
+    desktop: true,
+    width: 900,
+    height: 600,
+    minWidth: 600,
+    minHeight: 400,
+    img: "https://res.cloudinary.com/dgus6y6lm/image/upload/v1765281226/Icon-512_dslhic.png",
+    content: <Settings />
+  },
+  {
+    id: "resume",
+    title: "Resume",
+    desktop: true,
+    width: 900,
+    height: 700,
+    minWidth: 600,
+    minHeight: 500,
+    x: 40,
+    y: -30,
+    img: "img/icons/pdf.png",
+    content: <Preview />,
+    showOnDesktop: true
+  },
+  {
+    id: "linkedin",
+    title: "LinkedIn",
+    desktop: false,
+    img: "https://res.cloudinary.com/dgus6y6lm/image/upload/v1765282159/false_sbepxq.png",
+    link: "https://www.linkedin.com/in/shaiksajidhussain"
+  },
+  {
     id: "github",
     title: "Github",
     desktop: false,
     img: "img/icons/github.png",
-    link: "https://github.com/Renovamen/playground-macos"
+    link: "https://github.com/shaiksajidhussain"
   }
 ];
 
